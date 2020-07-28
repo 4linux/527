@@ -1,0 +1,36 @@
+---
+- hosts: automation
+  remote_user: vagrant
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Instalando Dependencias
+      apt:
+        name: ["apt-transport-https","ca-certificates","curl","gnupg-agent","software-properties-common","python3","python3-pip"]
+        update_cache: yes
+        state: present
+
+    - name: Adicionando Chave
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Adicionando Repositorio
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable"
+        state: present
+
+    - name: Instalando Docker
+      apt:
+        name: docker-ce
+        update_cache: yes
+        state: present
+      notify: docker-service
+
+  handlers:
+    - name: docker-service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started

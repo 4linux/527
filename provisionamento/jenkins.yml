@@ -1,0 +1,98 @@
+---
+- hosts: testing
+  remote_user: vagrant
+  become: yes
+  vars: 
+    JAVA_OPTIONS: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+    JAVA_ARGS: "$JAVA_ARGS -Dhudson.security.csrf.DefaultCrumbIssuer.EXCLUDE_SESSION_ID=true"
+    JENKINS_PLUGINS: ["credentials-binding","git","ssh","build-pipeline-plugin","ws-cleanup","sonar","zap","sonar-quality-gates","chucknorris"]
+    JENKINS_USER: admin
+    JENKINS_PASSWORD: 4linux
+  tasks:
+    - name: Adicionando Repositorio do Jenkins
+      get_url:
+        url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/
+
+    - name: Importando Chave do Jenkins
+      rpm_key:
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+        state: present
+
+    - name: Instalando Jenkins e Pacotes Adicionais
+      yum:
+        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget"]
+        state: present
+
+    - name: Criando Diretório init.groovy.d
+      file:
+        path: /var/lib/jenkins/init.groovy.d
+        state: directory
+        owner: "jenkins"
+        group: "jenkins"
+        mode: 0775
+
+    - name: Configurando Usuário admin no Jenkins
+      template:
+        src: ./files/basic-security.groovy.j2
+        dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
+        owner: "jenkins"
+        group: "jenkins"
+        mode: 0775
+      register: jenkins_basic_security
+
+    - name: Alterando Jenkins JAVA Options
+      lineinfile:
+        path: /etc/sysconfig/jenkins
+        regexp: '^JENKINS_JAVA_OPTIONS='
+        line: 'JENKINS_JAVA_OPTIONS="{{ JAVA_OPTIONS }}"'
+      register: jenkins_java_options
+
+    - name: Alterando Jenkins JAVA ARGS
+      lineinfile:
+        path: /etc/sysconfig/jenkins
+        regexp: '^JAVA_ARGS='
+        line: 'JAVA_ARGS="{{ JAVA_ARGS }}"'
+      register: jenkins_java_args
+
+    - name: Iniciando Jenkins Service
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: restarted
+      when: jenkins_java_options.changed or jenkins_java_args.changed
+
+    - name: Aguardando Jenkins Iniciar
+      uri:
+        url: http://192.168.77.10:8080
+        force_basic_auth: yes
+        url_username: "{{ JENKINS_USER }}"
+        url_password: "{{ JENKINS_PASSWORD }}"
+        status_code: 200
+        timeout: 10
+      register: jenkins_service_status
+      retries: 60
+      delay: 10
+      until: >
+         'status' in jenkins_service_status and
+         jenkins_service_status['status'] == 200
+
+    - name: Instalando Plugins do Jenkins
+      jenkins_plugin:
+        name: "{{ item }}"
+        force_basic_auth: True
+        url_username: "{{ JENKINS_USER }}" 
+        url_password: "{{ JENKINS_PASSWORD }}"
+      loop: "{{ JENKINS_PLUGINS }}"
+      register: plugin_result
+      until: plugin_result is success
+      retries: 5
+      delay: 3
+      notify: jenkins_restart
+
+  handlers:
+  - name: jenkins_restart
+    systemd:
+      name: jenkins
+      enabled: yes
+      state: restarted
