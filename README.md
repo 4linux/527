@@ -24,16 +24,16 @@ O Laboratório será criado utilizando o [Vagrant][7]. Ferramenta para criar e g
 
 Nesse laboratórios, que está centralizado no arquivo [Vagrantfile][8], serão criadas 4 maquinas com as seguintes características:
 
-Nome       | vCPUs | Memoria RAM | IP            | Box **[1]**            | Script de Provisionamento **[2]**
+Nome       | vCPUs | Memoria RAM | IP            | Box¹           | Script de Provisionamento²
 ---------- |:-----:|:-----------:|:-------------:|:---------------:| -----------------------------
 testing    | 1     | 3072MB      | 192.168.77.10 | centos/7        | [provisionamento/jenkins.yml][9]
 automation | 1     | 3072MB      | 192.168.77.20 | debian/buster64 | [provisionamento/docker.yml][10]
 logging    | 1     | 4092MB      | 192.168.77.30 | centos/7        | [provisionamento/x.yml][11]
 validation | 1     | 2048MB      | 192.168.77.40 | debian/buster64 | [provisionamento/xx.yml][12]
 
-> **[1]**: Box é a forma como o vagrant chama as imagens do sistema operacional utilizado
+> **¹**: Box é a forma como o vagrant chama as imagens do sistema operacional utilizado
 
-> **[2]**: Para o Script de Provisionamento estamos utilizando o Ansible
+> **²**: Para o Script de Provisionamento estamos utilizando o Ansible
 
 Criação do Laboratório 
 ----------------------
@@ -41,14 +41,14 @@ Criação do Laboratório
 Para criar o laboratório é necessário fazer o `git clone` desse repositório e, dentro da pasta baixada realizar a execução do `vagrant up`, conforme abaixo:
 
 ```bash
-git clone 
-cd 
+git clone https://github.com/4linux/527
+cd 527/
 vagrant up
 ```
 
-O Laboratório pode levar alguns minutos para ficar totalmente preparado, já que prepara o ambiente fazendo alguns instalações necessárias para o curso.
+_O Laboratório **pode demorar alguns minutos**, dependendo da conexão de internet, para ficar totalmente preparado._
 
-Com isso, para melhor utilização, abaixo há alguns comandos básicos do vagrant para gerencia das máquinas virtuais.
+Por fim, para melhor utilização, abaixo há alguns comandos básicos do vagrant para gerencia das máquinas virtuais.
 
 Comandos                | Descrição
 :----------------------:| ---------------------------------------
