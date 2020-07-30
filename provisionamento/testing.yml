@@ -5,7 +5,7 @@
   vars: 
     JAVA_OPTIONS: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
     JAVA_ARGS: "$JAVA_ARGS -Dhudson.security.csrf.DefaultCrumbIssuer.EXCLUDE_SESSION_ID=true"
-    JENKINS_PLUGINS: ["credentials-binding","git","ssh","build-pipeline-plugin","ws-cleanup","sonar","zap","sonar-quality-gates","chucknorris"]
+    JENKINS_PLUGINS: ["credentials-binding","git","ssh","build-pipeline-plugin","ws-cleanup","sonar","zap","sonar-quality-gates","chucknorris",'timestamper','dashboard-view','build-timeout','rebuild','htmlpublisher','workflow-aggregator','pipeline-stage-view','build-pipeline-plugin','conditional-buildstep','jenkins-multijob-plugin','parameterized-trigger','git-parameter']
     JENKINS_USER: admin
     JENKINS_PASSWORD: 4linux
   tasks:
@@ -19,9 +19,20 @@
         key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
         state: present
 
+    - name: Adicionando Repositório do NodeJS
+      shell: curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash - > /opt/nodejs_repo
+      args:
+        creates: /opt/nodejs_repo
+        warn: false
+
     - name: Instalando Jenkins e Pacotes Adicionais
       yum:
-        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget"]
+        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","epel-release","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xvattr","xterm"]
+        state: present
+
+    - name: Instalando Fluxbox
+      yum:
+        name: fluxbox
         state: present
 
     - name: Criando Diretório init.groovy.d
@@ -34,12 +45,11 @@
 
     - name: Configurando Usuário admin no Jenkins
       template:
-        src: ./files/basic-security.groovy.j2
+        src: ./template/basic-security.groovy.j2
         dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
         owner: "jenkins"
         group: "jenkins"
         mode: 0775
-      register: jenkins_basic_security
 
     - name: Alterando Jenkins JAVA Options
       lineinfile:
@@ -89,6 +99,31 @@
       retries: 5
       delay: 3
       notify: jenkins_restart
+
+    - name: Garantindo Arquivos do Curso
+      synchronize:
+        src: ./files/
+        dest: /root/extra-files/
+        perms: yes
+        recursive: yes
+
+    - name: Configurando Fluxbox
+      lineinfile:
+        path: /root/.xinitrc
+        create: yes
+        line: "exec /usr/bin/fluxbox -display :0"
+
+    - name: Validando Instalador do OWASP ZAP
+      stat:
+        path: /root/ZAP_2_9_0_unix.sh
+      register: zap_installer
+    - name: Baixando Instalador do OWASP ZAP
+      get_url:
+        url: https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh
+        dest: /root/
+        mode: ugo+x
+        checksum: sha256:0cd4abdfe072ffd7fed75e7d607913729709a336d53e208803d17bbb3a7a5137
+      when: not zap_installer.stat.exists
 
   handlers:
   - name: jenkins_restart
