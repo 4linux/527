@@ -1,0 +1,25 @@
+peline{
+agent any
+stages {
+  stage('Git'){
+    steps{
+      git 'https://github.com/4linux/Dexter-Intranet'
+    }
+  }
+  stage('Sonarqube'){
+    environment {
+      scanner = tool 'sonar-scanner'
+    }
+    steps{
+      withSonarQubeEnv('sonarqube') {
+        sh "${scanner}/bin/sonar-scanner -Dsonar.projectKey=dexter-intranet -Dsonar.sources=${WORKSPACE}/intranet -Dsonar.projectVersion=${BUILD_NUMBER}"
+      }
+    }
+  }
+  stage('Quality Gate') {
+    steps{
+      waitForQualityGate abortPipeline: true
+          }
+      }
+  }
+}
