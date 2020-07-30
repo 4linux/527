@@ -4,7 +4,7 @@
   memory: 3072
   ip: 192.168.77.10
   so: centos/7
-  script: provisionamento/jenkins.yml
+  script: provisionamento/testing.yml
 
 #DOCKER - SONARQUBE / ANSIBLE VAULT - HARDENING / AWX 
 - name: automation
@@ -12,7 +12,7 @@
   memory: 3072
   ip: 192.168.77.20
   so: debian/buster64
-  script: provisionamento/docker.yml
+  script: provisionamento/automation.yml
 
 #ELK / VAULT SERVER / CHATOPS  / TERRAFORM
 - name: logging
@@ -20,7 +20,7 @@
   memory: 4092
   ip: 192.168.77.30
   so: centos/7
-  script: provisionamento/null.yml
+  script: provisionamento/logging.yml
 
 #GAUNTLT / LOGSTASH / GERRIT / VAULT CLIENT  
 - name: validation
@@ -28,4 +28,4 @@
   memory: 2048
   ip: 192.168.77.40
   so: debian/buster64
-  script: provisionamento/null.yml
+  script: provisionamento/validation.yml
