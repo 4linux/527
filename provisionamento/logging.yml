@@ -1,0 +1,21 @@
+---
+- hosts: logging 
+  remote_user: vagrant
+  become: yes
+  vars:
+    ELASTIC_VERSION: 7.x
+  tasks:
+    - name: Importando Chave do Repositório - Elastic Stack
+      rpm_key:
+        key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Garantindo Repositório Elastic Stack
+      template:
+        src: ./template/elasticstack.repo.j2
+        dest: /etc/yum.repos.d/elasticstack.repo
+
+    - name: Instalando Pacotes necessarios
+      yum:
+        name: ["vim","java"]
+        state: present
