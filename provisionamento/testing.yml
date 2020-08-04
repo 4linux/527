@@ -27,7 +27,7 @@
 
     - name: Instalando Jenkins e Pacotes Adicionais
       yum:
-        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","epel-release","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xvattr","xterm","vim"]
+        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","epel-release","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xvattr","xterm","vim","tree"]
         state: present
 
     - name: Instalando Fluxbox
