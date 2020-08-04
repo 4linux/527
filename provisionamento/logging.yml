@@ -15,7 +15,39 @@
         src: ./template/elasticstack.repo.j2
         dest: /etc/yum.repos.d/elasticstack.repo
 
+    - name: Instalando EPEL-Relase
+      yum:
+        name: epel-release
+        state: present
+
     - name: Instalando Pacotes necessarios
       yum:
-        name: ["vim","java"]
+        name: ["vim","java","ansible","tree","wget","curl"]
         state: present
+
+    - block:
+        - name: Configurando Ansible.cfg
+          replace:
+            path: /etc/ansible/ansible.cfg
+            regexp: '^#(inventory.*)'
+            before: '#library        = /usr/share/my_modules/' 
+            replace: '\1'
+        - replace:
+            path: /etc/ansible/ansible.cfg
+            regexp: "{{ item }}"
+            replace: '\1'
+          loop:
+          - '^#(host_key_checking.*)'
+          - '^#(roles_path.*)'
+    
+    - name: Preparando Role Wordpress 
+      shell: ansible-galaxy init wordpress
+      args:
+        chdir: /etc/ansible/roles/
+        creates: /etc/ansible/roles/wordpress/tasks/main.yml
+
+    - name: Criando Variável p/ MySQL Socket
+      lineinfile:
+        path: /etc/ansible/roles/wordpress/vars/main.yml
+        regexp: '^socket_unix:.*'
+        line: 'socket_unix: /run/mysqld/mysqld.sock'
