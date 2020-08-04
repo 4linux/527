@@ -1,0 +1,12 @@
+---
+- hosts: validation
+  remote_user: vagrant
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Instalando Pacotes
+      apt:
+        name: ["vim","python3","python3-pip","tree","wget","curl"]
+        update_cache: yes
+        state: present
