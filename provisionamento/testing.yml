@@ -25,9 +25,14 @@
         creates: /opt/nodejs_repo
         warn: false
 
+    - name: Garantindo EPEL Release
+      yum:
+        name: epel-release
+        state: present
+
     - name: Instalando Jenkins e Pacotes Adicionais
       yum:
-        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","epel-release","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xvattr","xterm","vim","tree"]
+        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xterm","vim","tree","openscap-scanner","scap-security-guide","scap-workbench","python3","python3-pip"]
         state: present
 
     - name: Instalando Fluxbox
@@ -35,13 +40,16 @@
         name: fluxbox
         state: present
 
-    - name: Criando Diretório init.groovy.d
+    - name: Criando Diretórios
       file:
-        path: /var/lib/jenkins/init.groovy.d
+        path: "{{ item.path }}"
         state: directory
-        owner: "jenkins"
-        group: "jenkins"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
         mode: 0775
+      loop:
+      - {path: /var/lib/jenkins/init.groovy.d, owner: "jenkins", group: "jenkins"}
+      - {path: /root/report/, owner: "root", group: "root"}
 
     - name: Configurando Usuário admin no Jenkins
       template:
@@ -129,5 +137,5 @@
   - name: jenkins_restart
     systemd:
       name: jenkins
-      enabled: yes
+      enabled: yes 
       state: restarted
