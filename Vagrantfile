@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
 		config.vm.define machines["name"] do |server|
 			server.vm.hostname = machines["name"]
 			server.vm.box = machines["so"]
+			server.vm.box_check_update = false
 			server.vm.network "private_network", ip: machines["ip"], dns: "8.8.8.8" 
 
 			server.vm.provider "virtualbox" do |vb|
