@@ -1,0 +1,3 @@
+[submodule "awx_project/roles/ansible-hardening"]
+	path = awx_project/roles/ansible-hardening
+	url = https://github.com/openstack/ansible-hardening

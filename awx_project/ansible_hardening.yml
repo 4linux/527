@@ -1,0 +1,14 @@
+---
+- name: Hardening in All
+  hosts: all
+  user: root
+  vars:
+    security_enable_firewalld: no
+    security_rhel7_initialize_aide: no
+    security_disallow_blank_password_login: no
+    security_sshd_permit_root_login: yes
+    security_ntp_servers:
+      - a.ntp.br
+      - b.ntp.br
+  roles:
+    - ansible-hardening
