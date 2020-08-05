@@ -28,7 +28,7 @@ Nome       | vCPUs | Memoria RAM | IP            | Box¹           | Script de P
 ---------- |:-----:|:-----------:|:-------------:|:---------------:| -----------------------------
 testing    | 1     | 3072MB      | 192.168.77.10 | centos/7        | [provisionamento/testing.yml][9]
 automation | 1     | 3072MB      | 192.168.77.20 | debian/buster64 | [provisionamento/automation.yml][10]
-logging    | 1     | 4092MB      | 192.168.77.30 | centos/7        | [provisionamento/logging.yml][11]
+logging    | 1     | 4092MB      | 192.168.77.30 | centos/8        | [provisionamento/logging.yml][11]
 validation | 1     | 2048MB      | 192.168.77.40 | debian/buster64 | [provisionamento/validation.yml][12]
 
 > **¹**: Box é a forma como o vagrant chama as imagens do sistema operacional utilizado

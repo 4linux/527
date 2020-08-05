@@ -1,4 +1,4 @@
-#JENKINS - OWASP ZAP / ARACHNI / OPENSCAP / KONG
+#JENKINS / OWASP ZAP / OPENSCAP / KONG
 - name: testing
   cpus: 1
   memory: 3072
@@ -6,7 +6,7 @@
   so: centos/7
   script: provisionamento/testing.yml
 
-#DOCKER - SONARQUBE / ANSIBLE VAULT - HARDENING / AWX 
+#DOCKER / SONARQUBE / LOGSTASH / ANSIBLE VAULT - HARDENING / AWX 
 - name: automation
   cpus: 1
   memory: 3072
@@ -19,10 +19,10 @@
   cpus: 1
   memory: 4092
   ip: 192.168.77.30
-  so: centos/7
+  so: centos/8
   script: provisionamento/logging.yml
 
-#GAUNTLT / LOGSTASH / GERRIT / VAULT CLIENT  
+#GAUNTLT / GERRIT / VAULT CLIENT  
 - name: validation
   cpus: 1
   memory: 2048
