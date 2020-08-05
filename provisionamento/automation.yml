@@ -12,22 +12,34 @@
         update_cache: yes
         state: present
 
-    - name: Adicionando Chave do Docker
-      apt_key:
-        url: https://download.docker.com/linux/debian/gpg
-        state: present
+    - block:
+        - name: Adicionando Chave - Docker
+          apt_key:
+            url: https://download.docker.com/linux/debian/gpg
+        - name: Adicionando Chave - Ansible
+          apt_key:
+            keyserver: keyserver.ubuntu.com
+            id: 93C4A3FD7BB9C367
 
-    - name: Adicionando Repositorio do Docker
+    - name: Adicionando Repositorios
       apt_repository:
-        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable"
+        repo: "{{ item }}" 
         state: present
+      loop: 
+      - "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable"
+      - "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main"
 
-    - name: Instalando Docker
+    - name: Instalando Docker e Ansible
       apt:
-        name: docker-ce
+        name: ["docker-ce","docker-compose","ansible"]
         update_cache: yes
         state: present
       notify: docker-service
+
+    - name: Configurando Modulo do Docker
+      pip:
+        name: docker-py
+        state: absent
 
     - name: Validando Instalador do Logstash
       stat:
