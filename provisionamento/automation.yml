@@ -36,10 +36,13 @@
         state: present
       notify: docker-service
 
-    - name: Configurando Modulo do Docker
+    - name: Configurando Modulos do Pip
       pip:
-        name: docker-py
-        state: absent
+        name: "{{ item.pkg }}"
+        state: "{{ item.state }}"
+      loop:
+      - {pkg: "docker-py", state: absent}
+      - {pkg: "ComplexHTTPServer", state: present}
 
     - name: Validando Instalador do Logstash
       stat:
@@ -57,6 +60,13 @@
         regexp: '^local7'
         line: "local7.*			/var/log/docker.log"
       notify: rsyslog-service
+
+    - name: Garantindo Arquivos do Curso
+      synchronize:
+        src: ./files/automation/
+        dest: /opt/
+        perms: yes
+        recursive: yes
 
   handlers:
     - name: docker-service
