@@ -110,8 +110,8 @@
 
     - name: Garantindo Arquivos do Curso
       synchronize:
-        src: ./files/
-        dest: /root/extra-files/
+        src: ./files/testing/
+        dest: /opt/
         perms: yes
         recursive: yes
 
