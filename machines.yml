@@ -1,4 +1,4 @@
-#JENKINS / OWASP ZAP / OPENSCAP / KONG
+#Jenkins / OWASP ZAP / OpenSCAP / Kong
 - name: testing
   cpus: 1
   memory: 3072
@@ -6,7 +6,7 @@
   so: centos/7
   script: provisionamento/testing.yml
 
-#DOCKER / SONARQUBE / LOGSTASH / ANSIBLE VAULT - HARDENING / AWX 
+#Docker / SONARQUBE / Logstash / AWX - Ansible Hardening / Clair
 - name: automation
   cpus: 1
   memory: 3072
@@ -14,7 +14,7 @@
   so: debian/buster64
   script: provisionamento/automation.yml
 
-#ELK / VAULT SERVER / CHATOPS  / TERRAFORM
+#Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS  / Terraform
 - name: logging
   cpus: 1
   memory: 4092
@@ -22,7 +22,7 @@
   so: centos/8
   script: provisionamento/logging.yml
 
-#GAUNTLT / GERRIT / VAULT CLIENT  
+#Hashicorp Vault(Client) / Gauntlt / Gerrit
 - name: validation
   cpus: 1
   memory: 2048
