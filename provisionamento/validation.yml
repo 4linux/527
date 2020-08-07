@@ -4,9 +4,50 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    VAULT_SSH_HELPER: 0.1.6
   tasks:
     - name: Instalando Pacotes
       apt:
-        name: ["vim","python3","python3-pip","tree","wget","curl"]
+        name: ["vim","python3","python3-pip","tree","wget","curl","unzip"]
         update_cache: yes
         state: present
+
+    - name: Validando Binário do Vault SSH Helper
+      stat:
+        path: /usr/bin/vault-ssh-helper
+      register: ssh_helper
+    - block:
+        - name: Baixando Vault SSH Helper
+          get_url:
+            url: "https://releases.hashicorp.com/vault-ssh-helper/{{VAULT_SSH_HELPER}}/vault-ssh-helper_{{VAULT_SSH_HELPER}}_linux_amd64.zip"
+            dest: /tmp/vault-ssh-helper.zip
+            checksum: sha256:3c472b42ba42584585340e51f1ce226617d616bf711e3a21a9adce4f034adebb
+        - name: Descompactando Binário do Vault SSH Helper
+          unarchive:
+            src: /tmp/vault-ssh-helper.zip
+            dest: /usr/bin/
+            mode: ugo+x
+            remote_src: yes
+      when: not ssh_helper.stat.exists
+
+    - name: Preparando Configuração do PAM
+      lineinfile:
+        path: /etc/pam.d/sshd
+        line: "{{ item }}"
+        insertafter: '@include common-auth'
+      loop:
+      - '#auth optional pam_unix.so not_set_pass use_first_pass nodelay'
+      - '#auth requisite pam_exec.so quiet expose_authtok log=/var/log/vaultssh.log /usr/bin/vault-ssh-helper -dev -config=/opt/config.hcl'
+
+    - name: Preparando Configuração do SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        backrefs: yes
+      loop:
+      - {regexp: '^#?(PermitRootLogin)', line: '\1 yes' }
+      - {regexp: '^#?(ChallengeResponseAuthentication)', line: '\1 yes' }
+      - {regexp: '^#?(UsePAM)', line: '\1 yes' }
+      - {regexp: '^#?(PasswordAuthentication)', line: '\1 no' }
+

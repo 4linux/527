@@ -5,24 +5,29 @@
   vars:
     ELASTIC_VERSION: 7.x
   tasks:
-    - name: Importando Chave do Repositório - Elastic Stack
+    - name: Importando Chaves do Repositório 
       rpm_key:
         key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
         state: present
 
     - name: Garantindo Repositório Elastic Stack
       template:
-        src: ./template/elasticstack.repo.j2
+        src: ./templates/elasticstack.repo.j2
         dest: /etc/yum.repos.d/elasticstack.repo
 
-    - name: Instalando EPEL-Relase
+    - name: Garantindo Repositório Hashicorp Vault
+      get_url:
+        url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        dest: /etc/yum.repos.d/
+
+    - name: Instalando EPEL-Relase e Yum Utils
       yum:
-        name: epel-release
+        name: ["epel-release","yum-utils"]
         state: present
 
-    - name: Instalando Pacotes necessarios
+    - name: Instalando Pacotes 
       yum:
-        name: ["vim","java","ansible","tree","wget","curl"]
+        name: ["vim","java","ansible","tree","wget","curl","vault","consul","mariadb"]
         state: present
 
     - block:
@@ -51,3 +56,47 @@
         path: /etc/ansible/roles/wordpress/vars/main.yml
         regexp: '^socket_unix:.*'
         line: 'socket_unix: /run/mysqld/mysqld.sock'
+
+    - name: Criando Usuário de Sistema
+      user:
+        name: "{{ item.user }}"
+        home: "{{ item.home }}"
+        create_home: yes
+        shell: /bin/false
+        system: yes
+      loop:
+      - {user: consul, home: /etc/consul.d/}
+      - {user: vault, home: /etc/vault.d/}
+
+    - name: Criando Diretórios
+      file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: 0775
+        recurse: yes
+      loop:
+      - {path: /var/consul/, owner: "consul", group: "consul"}
+      - {path: /var/consul/data/vault/, owner: "consul", group: "consul"}
+
+    - name: Criando Service files
+      template: 
+        src: "./templates/{{ item }}"
+        dest: /etc/systemd/system/
+      loop:
+      - consul.service
+      - vault.service
+      notify: daemon-reload
+
+    - name: Garantindo Arquivos de Configuração
+      synchronize:
+        src: ./files/logging/etc/
+        dest: /etc/
+        perms: yes
+        recursive: yes
+
+  handlers:
+    - name: daemon-reload
+      systemd:
+        daemon_reload: yes
