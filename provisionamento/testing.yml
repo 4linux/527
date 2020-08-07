@@ -32,7 +32,7 @@
 
     - name: Instalando Jenkins e Pacotes Adicionais
       yum:
-        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xterm","vim","tree","openscap-scanner","scap-security-guide","scap-workbench","python3","python3-pip"]
+        name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xterm","vim","tree","openscap-scanner","scap-security-guide","scap-workbench","python3","python3-pip","python3-setuptools"]
         state: present
 
     - name: Instalando Fluxbox
@@ -53,7 +53,7 @@
 
     - name: Configurando Usuário admin no Jenkins
       template:
-        src: ./template/basic-security.groovy.j2
+        src: ./templates/basic-security.groovy.j2
         dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
         owner: "jenkins"
         group: "jenkins"
@@ -132,6 +132,14 @@
         mode: ugo+x
         checksum: sha256:0cd4abdfe072ffd7fed75e7d607913729709a336d53e208803d17bbb3a7a5137
       when: not zap_installer.stat.exists
+
+    - name: Configurando Modulos do Pip
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+      pip:
+        name: ComplexHTTPServer
+        executable: pip3
+        state: present
 
   handlers:
   - name: jenkins_restart
