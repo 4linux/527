@@ -27,7 +27,7 @@
 
     - name: Instalando Pacotes 
       yum:
-        name: ["vim","java","ansible","tree","wget","curl","vault","consul","mariadb"]
+        name: ["vim","java","ansible","tree","wget","curl","vault","consul","mariadb","redhat-rpm-config","python3-devel","gcc"]
         state: present
 
     - block:
@@ -93,6 +93,13 @@
       synchronize:
         src: ./files/logging/etc/
         dest: /etc/
+        perms: yes
+        recursive: yes
+
+    - name: Garantindo Configuração de Alerta
+      synchronize:
+        src: ./files/logging/elastalert
+        dest: /opt/
         perms: yes
         recursive: yes
 
