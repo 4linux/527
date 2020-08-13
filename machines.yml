@@ -6,7 +6,7 @@
   so: centos/7
   script: provisionamento/testing.yml
 
-#Docker / SONARQUBE / Logstash / AWX - Ansible Hardening / Clair
+#Docker / SONARQUBE / Logstash / ModSecurity / AWX - Ansible Hardening / Clair
 - name: automation
   cpus: 1
   memory: 3072
@@ -14,7 +14,7 @@
   so: debian/buster64
   script: provisionamento/automation.yml
 
-#Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS  / Terraform
+#Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS 
 - name: logging
   cpus: 1
   memory: 4092
@@ -22,7 +22,7 @@
   so: centos/8
   script: provisionamento/logging.yml
 
-#Hashicorp Vault(Client) / Gauntlt / Gerrit
+#Hashicorp Vault(Client) / Terraform / Gauntlt / Gerrit 
 - name: validation
   cpus: 1
   memory: 2048
