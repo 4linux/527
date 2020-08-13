@@ -6,9 +6,18 @@
     ansible_python_interpreter: /usr/bin/python3
     VAULT_SSH_HELPER: 0.1.6
   tasks:
+    - name: Adicionando Chave de Repositório
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+
+    - name: Adicionando Repositorio
+      apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release}} main"
+        state: present
+ 
     - name: Instalando Pacotes
       apt:
-        name: ["vim","python3","python3-pip","tree","wget","curl","unzip"]
+        name: ["vim","python3","python3-pip","tree","wget","curl","unzip","terraform"]
         update_cache: yes
         state: present
 
@@ -30,14 +39,19 @@
             remote_src: yes
       when: not ssh_helper.stat.exists
 
-    - name: Preparando Configuração do PAM
-      lineinfile:
-        path: /etc/pam.d/sshd
-        line: "{{ item }}"
-        insertafter: '@include common-auth'
-      loop:
-      - '#auth optional pam_unix.so not_set_pass use_first_pass nodelay'
-      - '#auth requisite pam_exec.so quiet expose_authtok log=/var/log/vaultssh.log /usr/bin/vault-ssh-helper -dev -config=/opt/config.hcl'
+    - block:
+        - name: Validando Configuração do PAM
+          shell: cat /etc/pam.d/sshd
+          register: vault_ssh_helper
+        - name: Preparando Configuração do PAM
+          lineinfile:
+            path: /etc/pam.d/sshd
+            line: "{{ item }}"
+            insertafter: '@include common-auth'
+          loop:
+          - '#auth optional pam_unix.so not_set_pass use_first_pass nodelay'
+          - '#auth requisite pam_exec.so quiet expose_authtok log=/var/log/vaultssh.log /usr/bin/vault-ssh-helper -dev -config=/opt/config.hcl'
+          when: vault_ssh_helper.stdout is not search('vault-ssh-helper')
 
     - name: Preparando Configuração do SSH
       lineinfile:
@@ -51,3 +65,10 @@
       - {regexp: '^#?(UsePAM)', line: '\1 yes' }
       - {regexp: '^#?(PasswordAuthentication)', line: '\1 no' }
 
+    - name: Preparando Arquivos IAM
+      synchronize:
+        src: ./files/validation/
+        dest: /opt/
+        perms: yes
+        recursive: yes
+        
