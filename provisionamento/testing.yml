@@ -9,38 +9,44 @@
     JENKINS_USER: admin
     JENKINS_PASSWORD: 4linux
   tasks:
-    - name: Adicionando Repositorio do Jenkins
+    - name: (Jenkins) Adicionando Repositorio
       get_url:
         url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
         dest: /etc/yum.repos.d/
 
-    - name: Importando Chave do Jenkins
+    - name: (Jenkins) Importando Chave do Jenkins
       rpm_key:
         key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
         state: present
 
-    - name: Adicionando Repositório do NodeJS
+    - name: (NodeJS) Adicionando Repositório 
       shell: curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash - > /opt/nodejs_repo
       args:
         creates: /opt/nodejs_repo
         warn: false
 
-    - name: Garantindo EPEL Release
+    - name: (Dependência) Garantindo EPEL Release
       yum:
         name: epel-release
         state: present
 
-    - name: Instalando Jenkins e Pacotes Adicionais
+    - name: (Dependência) Instalando de Pacotes
       yum:
         name: ["git","java-1.8.0-openjdk-devel","jenkins","unzip","wget","nodejs","glx-utils","mesa-dri-drivers","spice-vdagent","xorg-x11-drivers","xorg-x11-server-Xorg","xorg-x11-utils","xorg-x11-xinit","xterm","vim","tree","openscap-scanner","scap-security-guide","scap-workbench","python3","python3-pip","python3-setuptools"]
         state: present
 
-    - name: Instalando Fluxbox
+    - name: (Ambiente Gráfico) Instalando Fluxbox
       yum:
         name: fluxbox
         state: present
 
-    - name: Criando Diretórios
+    - name: (Ambiente Gráfico) Configurando Fluxbox
+      lineinfile:
+        path: /root/.xinitrc
+        create: yes
+        line: "exec /usr/bin/fluxbox -display :0"
+
+    - name: (Dependência) Criando Diretórios
       file:
         path: "{{ item.path }}"
         state: directory
@@ -51,7 +57,7 @@
       - {path: /var/lib/jenkins/init.groovy.d, owner: "jenkins", group: "jenkins"}
       - {path: /root/report/, owner: "root", group: "root"}
 
-    - name: Configurando Usuário admin no Jenkins
+    - name: (Jenkins) Configurando Usuário admin
       template:
         src: ./templates/basic-security.groovy.j2
         dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
@@ -59,28 +65,28 @@
         group: "jenkins"
         mode: 0775
 
-    - name: Alterando Jenkins JAVA Options
+    - name: (Jenkins) Alterando JAVA Options
       lineinfile:
         path: /etc/sysconfig/jenkins
         regexp: '^JENKINS_JAVA_OPTIONS='
         line: 'JENKINS_JAVA_OPTIONS="{{ JAVA_OPTIONS }}"'
       register: jenkins_java_options
 
-    - name: Alterando Jenkins JAVA ARGS
+    - name: (Jenkins) Alterando JAVA ARGS
       lineinfile:
         path: /etc/sysconfig/jenkins
         regexp: '^JAVA_ARGS='
         line: 'JAVA_ARGS="{{ JAVA_ARGS }}"'
       register: jenkins_java_args
 
-    - name: Iniciando Jenkins Service
+    - name: (Jenkins) Iniciando Service
       systemd:
         name: jenkins
         enabled: yes
         state: restarted
       when: jenkins_java_options.changed or jenkins_java_args.changed
 
-    - name: Aguardando Jenkins Iniciar
+    - name: (Jenkins) Aguardando Inicialização
       uri:
         url: http://192.168.77.10:8080
         force_basic_auth: yes
@@ -95,7 +101,7 @@
          'status' in jenkins_service_status and
          jenkins_service_status['status'] == 200
 
-    - name: Instalando Plugins do Jenkins
+    - name: (Jenkins) Instalando Plugins
       jenkins_plugin:
         name: "{{ item }}"
         force_basic_auth: True
@@ -108,24 +114,18 @@
       delay: 3
       notify: jenkins_restart
 
-    - name: Garantindo Arquivos do Curso
+    - name: (Dependência) Garantindo Arquivos do Curso
       synchronize:
         src: ./files/testing/
         dest: /opt/
         perms: yes
         recursive: yes
 
-    - name: Configurando Fluxbox
-      lineinfile:
-        path: /root/.xinitrc
-        create: yes
-        line: "exec /usr/bin/fluxbox -display :0"
-
-    - name: Validando Instalador do OWASP ZAP
+    - name: (OWASP ZAP) Validando Instalador do OWASP ZAP
       stat:
         path: /root/ZAP_2_9_0_unix.sh
       register: zap_installer
-    - name: Baixando Instalador do OWASP ZAP
+    - name: (OWASP ZAP) Baixando Instalador
       get_url:
         url: https://github.com/zaproxy/zaproxy/releases/download/v2.9.0/ZAP_2_9_0_unix.sh
         dest: /root/
@@ -133,7 +133,7 @@
         checksum: sha256:0cd4abdfe072ffd7fed75e7d607913729709a336d53e208803d17bbb3a7a5137
       when: not zap_installer.stat.exists
 
-    - name: Configurando Modulos do Pip
+    - name: (Dependência) Configurando Modulos do Pip
       vars:
         ansible_python_interpreter: /usr/bin/python3
       pip:

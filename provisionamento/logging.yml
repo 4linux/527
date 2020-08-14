@@ -5,33 +5,33 @@
   vars:
     ELASTIC_VERSION: 7.x
   tasks:
-    - name: Importando Chaves do Repositório 
+    - name: (Elastic Stack) Importando Chaves
       rpm_key:
         key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
         state: present
 
-    - name: Garantindo Repositório Elastic Stack
+    - name: (Elastic Stack) Garantindo Repositório
       template:
         src: ./templates/elasticstack.repo.j2
         dest: /etc/yum.repos.d/elasticstack.repo
 
-    - name: Garantindo Repositório Hashicorp Vault
+    - name: (Hashicorp Vault) Garantindo Repositório
       get_url:
         url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
         dest: /etc/yum.repos.d/
 
-    - name: Instalando EPEL-Relase e Yum Utils
+    - name: (Dependência) Instalando EPEL-Relase e Yum Utils
       yum:
         name: ["epel-release","yum-utils"]
         state: present
 
-    - name: Instalando Pacotes 
+    - name: (Dependência) Instalando Pacotes 
       yum:
         name: ["vim","java","ansible","tree","wget","curl","vault","consul","mariadb","redhat-rpm-config","python3-devel","gcc"]
         state: present
 
     - block:
-        - name: Configurando Ansible.cfg
+        - name: (Ansible) Configurando Ansible.cfg
           replace:
             path: /etc/ansible/ansible.cfg
             regexp: '^#(inventory.*)'
@@ -45,19 +45,19 @@
           - '^#(host_key_checking.*)'
           - '^#(roles_path.*)'
     
-    - name: Preparando Role Wordpress 
+    - name: (Ansible) Preparando Role Wordpress 
       shell: ansible-galaxy init wordpress
       args:
         chdir: /etc/ansible/roles/
         creates: /etc/ansible/roles/wordpress/tasks/main.yml
 
-    - name: Criando Variável p/ MySQL Socket
+    - name: (Ansible) Criando Variável p/ MySQL Socket
       lineinfile:
         path: /etc/ansible/roles/wordpress/vars/main.yml
         regexp: '^socket_unix:.*'
         line: 'socket_unix: /run/mysqld/mysqld.sock'
 
-    - name: Criando Usuário de Sistema
+    - name: (Hashicorp Vault) Criando Usuário de Sistema
       user:
         name: "{{ item.user }}"
         home: "{{ item.home }}"
@@ -68,7 +68,7 @@
       - {user: consul, home: /etc/consul.d/}
       - {user: vault, home: /etc/vault.d/}
 
-    - name: Criando Diretórios
+    - name: (Hashicorp Vault) Criando Diretórios
       file:
         path: "{{ item.path }}"
         state: directory
@@ -80,7 +80,7 @@
       - {path: /var/consul/, owner: "consul", group: "consul"}
       - {path: /var/consul/data/vault/, owner: "consul", group: "consul"}
 
-    - name: Criando Service files
+    - name: (Hashicorp Vault) Criando Service files
       template: 
         src: "./templates/{{ item }}"
         dest: /etc/systemd/system/
@@ -89,14 +89,14 @@
       - vault.service
       notify: daemon-reload
 
-    - name: Garantindo Arquivos de Configuração
+    - name: (Hashicorp Vault) Garantindo Arquivos de Configuração
       synchronize:
         src: ./files/logging/etc/
         dest: /etc/
         perms: yes
         recursive: yes
 
-    - name: Garantindo Configuração de Alerta
+    - name: (ElastAlert) Garantindo Configuração de Alerta
       synchronize:
         src: ./files/logging/elastalert
         dest: /opt/
