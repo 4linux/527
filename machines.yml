@@ -1,4 +1,4 @@
-#Jenkins / OWASP ZAP / OpenSCAP / Kong
+#Jenkins / OWASP ZAP / OpenSCAP 
 - name: testing
   cpus: 1
   memory: 3072
@@ -22,7 +22,7 @@
   so: centos/8
   script: provisionamento/logging.yml
 
-#Hashicorp Vault(Client) / Terraform / Gauntlt / Gerrit 
+#Hashicorp Vault(Client) / Terraform / Gauntlt / Kong
 - name: validation
   cpus: 1
   memory: 2048
