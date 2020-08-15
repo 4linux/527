@@ -1,7 +1,6 @@
 ---
-- hosts: testing
-  remote_user: vagrant
-  become: yes
+- hosts: localhost
+  connection: local
   vars: 
     JAVA_OPTIONS: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
     JAVA_ARGS: "$JAVA_ARGS -Dhudson.security.csrf.DefaultCrumbIssuer.EXCLUDE_SESSION_ID=true"

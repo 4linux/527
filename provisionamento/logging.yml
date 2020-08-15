@@ -1,7 +1,6 @@
 ---
-- hosts: logging 
-  remote_user: vagrant
-  become: yes
+- hosts: localhost
+  connection: local
   vars:
     ELASTIC_VERSION: 7.x
   tasks:
