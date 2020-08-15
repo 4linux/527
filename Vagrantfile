@@ -21,18 +21,8 @@ Vagrant.configure("2") do |config|
 				vb.cpus = machines["cpus"]
 				vb.name = machines["name"]
 			end
+
+      server.vm.provision "shell", path: "provisionamento/provision.sh", args: machines["script"]
 		end
-
-    config.vm.provision "ansible" do |ansible|
-      ansible.compatibility_mode = "2.0"
-      ansible.playbook = machines["script"]
-    end
-
-  	config.vm.provision "shell", inline: <<-SHELL
-  	  mkdir -p /root/.ssh/
-  	  cat /vagrant/devsecops.pem > /root/.ssh/id_rsa
-  	  cat /vagrant/devsecops.pub > /root/.ssh/authorized_keys
-  	  chmod 600 /root/.ssh/id_rsa
-  	SHELL
 	end
 end
