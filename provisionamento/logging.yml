@@ -19,7 +19,7 @@
         url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
         dest: /etc/yum.repos.d/
 
-    - name: (Dependência) Instalando EPEL-Relase e Yum Utils
+    - name: (Dependência) Garantindo Epel-Release e Yum Utils
       yum:
         name: ["epel-release","yum-utils"]
         state: present
