@@ -11,26 +11,18 @@
         update_cache: yes
         state: present
 
-    - block:
-        - name: (Docker) Adicionando Chave
-          apt_key:
-            url: https://download.docker.com/linux/debian/gpg
-        - name: (Ansible) Adicionando Chave
-          apt_key:
-            keyserver: keyserver.ubuntu.com
-            id: 93C4A3FD7BB9C367
+    - name: (Docker) Adicionando Chave
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
 
     - name: (Dependência) Adicionando Repositorios
       apt_repository:
-        repo: "{{ item }}" 
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable" 
         state: present
-      loop: 
-      - "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable"
-      - "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main"
 
-    - name: (Docker/Ansible) Instalando Pacotes
+    - name: (Docker) Instalando Pacotes
       apt:
-        name: ["docker-ce","docker-compose","ansible"]
+        name: ["docker-ce","docker-compose"]
         update_cache: yes
         state: present
       notify: docker-service
@@ -42,6 +34,8 @@
       loop:
       - {pkg: "docker-py", state: absent}
       - {pkg: "ComplexHTTPServer", state: present}
+      loop_control:
+        label: item.pkg
 
     - name: (Elastic Stack) Validando Instalador do Logstash
       stat:
@@ -51,6 +45,7 @@
       get_url:
         url: "https://artifacts.elastic.co/downloads/logstash/logstash-{{ LOGSTASH_VERSION }}.deb"
         dest: "/root/logstash-{{ LOGSTASH_VERSION }}.deb"
+        mode: "644"
       when: not logstash_installer.stat.exists
 
     - name: (Dependência) Garantindo configuração do rsyslog.conf
