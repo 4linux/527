@@ -10,7 +10,6 @@ Para a criação do laboratório é necessário ter pré instalado os seguintes 
 
 * [Git][2]
 * [VirtualBox][3]
-* [Ansible][4]
 * [Vagrant][5]
 
 > Para o máquinas com Windows aconselhamos, se possível, que as instalações sejam feitas pelo gerenciador de pacotes **[Cygwin][6]**.
@@ -46,7 +45,7 @@ cd 527/
 vagrant up
 ```
 
-_O Laboratório **pode demorar alguns minutos**, dependendo da conexão de internet, para ficar totalmente preparado._
+_O Laboratório **pode demorar**, dependendo da conexão de internet e poder computacional, para ficar totalmente preparado._
 
 Por fim, para melhor utilização, abaixo há alguns comandos básicos do vagrant para gerencia das máquinas virtuais.
 
@@ -68,7 +67,6 @@ Comandos                | Descrição
 [1]: https://4linux.com.br
 [2]: https://git-scm.com/downloads
 [3]: https://www.virtualbox.org/wiki/Downloads
-[4]: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 [5]: https://www.vagrantup.com/downloads
 [6]: https://cygwin.com/install.html
 [7]: https://www.vagrantup.com/
