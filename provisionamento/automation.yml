@@ -18,6 +18,7 @@
     - name: (Dependência) Adicionando Repositorios
       apt_repository:
         repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release}} stable" 
+        mode: "644"
         state: present
 
     - name: (Docker) Instalando Pacotes
