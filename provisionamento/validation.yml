@@ -15,6 +15,7 @@
     - name: (Dependência) Adicionando Repositorio
       apt_repository:
         repo: "{{ item }}"
+        mode: "644"
         state: present
       loop:
       - "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
@@ -41,6 +42,7 @@
           get_url:
             url: "https://releases.hashicorp.com/vault-ssh-helper/{{VAULT_SSH_HELPER}}/vault-ssh-helper_{{VAULT_SSH_HELPER}}_linux_amd64.zip"
             dest: /tmp/vault-ssh-helper.zip
+            mode: "644"
             checksum: sha256:3c472b42ba42584585340e51f1ce226617d616bf711e3a21a9adce4f034adebb
         - name: (Vault Hashicorp) Descompactando Binário do Vault SSH Helper
           unarchive:
