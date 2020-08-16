@@ -15,7 +15,7 @@ if [ "$lsb_dist" == "centos" ]; then
 
 elif [ "$lsb_dist" == "debian" ]; then
 
-  apt-get update -qq >/dev/null && apt-get install software-properties-common -y -qq >/dev/null && echo "[OK] SOFTWARE PROPERTIES COMMON"
+  apt-get update -qq >/dev/null && apt-get install software-properties-common gnupg -y -qq >/dev/null && echo "[OK] SOFTWARE PROPERTIES COMMON"
   apt-add-repository "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" && echo "[OK] ANSIBLE REPOSITORY"
   apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367 >/dev/null && echo "[OK] ANSIBLE KEY"
   apt-get update -qq >/dev/null && echo "[OK] UPDATE REPOSITORY"
@@ -31,8 +31,6 @@ if [ ! -f /root/.ssh/id_rsa ]; then
   cat /vagrant/keys/devsecops.pem > /root/.ssh/id_rsa && \
   cat /vagrant/keys/devsecops.pub > /root/.ssh/authorized_keys && \
   chmod 600 /root/.ssh/id_rsa && \
-  echo "[OK] SSH KEY"
-else
   echo "[OK] SSH KEY"
 fi
 
