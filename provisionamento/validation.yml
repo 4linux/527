@@ -23,7 +23,7 @@
  
     - name: (Dependência) Instalando Pacotes
       apt:
-        name: ["vim","python3","python3-pip","python-setuptools","tree","wget","curl","unzip","terraform","git","mlocate","gem","ruby","rubygems","ruby-dev","nmap","dirb","zlib1g-dev","zlib1g","kong","postgresql","postgresql-client"]
+        name: ["vim","python3","python3-pip","python-setuptools","tree","wget","curl","unzip","terraform","git","mlocate","gem","ruby","rubygems","ruby-dev","nmap","dirb","zlib1g-dev","zlib1g","kong","postgresql","postgresql-client", "mariadb-server"]
         update_cache: yes
         state: present
 
