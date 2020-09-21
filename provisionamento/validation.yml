@@ -23,7 +23,7 @@
  
     - name: (Dependência) Instalando Pacotes
       apt:
-        name: ["vim","python3","python3-pip","python-setuptools","tree","wget","curl","unzip","terraform","git","mlocate","gem","ruby","rubygems","ruby-dev","nmap","dirb","zlib1g-dev","zlib1g","kong","postgresql","postgresql-client"]
+        name: ["vim","python3","python3-pip","python-setuptools","tree","wget","curl","unzip","terraform","git","mlocate","gem","ruby","rubygems","ruby-dev","nmap","dirb","zlib1g-dev","zlib1g","kong","postgresql","postgresql-client", "mariadb-server"]
         update_cache: yes
         state: present
 
@@ -77,6 +77,7 @@
       - {regexp: '^#?(ChallengeResponseAuthentication)', line: '\1 yes' }
       - {regexp: '^#?(UsePAM)', line: '\1 yes' }
       - {regexp: '^#?(PasswordAuthentication)', line: '\1 no' }
+      notify: sshd_restart
 
     - name: (Cloud) Preparando Arquivos
       synchronize:
@@ -95,3 +96,9 @@
         dest: /opt/gauntlt/
       when: not gauntlt_dir.stat.exists
 
+  handlers:
+  - name: sshd_restart
+    systemd:
+      name: sshd
+      enabled: yes
+      state: restarted

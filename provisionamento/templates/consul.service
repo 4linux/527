@@ -6,18 +6,17 @@ After=network-online.target
 [Service]
 User=consul
 Group=consul
-PIDFile=/var/run/consul/consul.pid
+PIDFile=/run/consul/consul.pid
 PermissionsStartOnly=true
-ExecStartPre=-/bin/mkdir -p /var/run/consul
-ExecStartPre=/bin/chown -R consul:consul /var/run/consul
 ExecStart=/usr/bin/consul agent \
-    -config-file=/etc/consul.d/consul.hcl \
-    -pid-file=/var/run/consul/consul.pid
+    -config-file=/etc/consul.d/consul.json \
+    -pid-file=/run/consul/consul.pid
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 KillSignal=SIGTERM
 Restart=on-failure
 RestartSec=42s
+RuntimeDirectory=consul
 
 [Install]
 WantedBy=multi-user.target

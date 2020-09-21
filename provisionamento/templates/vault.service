@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 User=vault
 Group=vault
-PIDFile=/var/run/vault/vault.pid
+PIDFile=/run/vault/vault.pid
 ExecStart=/usr/bin/vault server -config=/etc/vault.d/vault.hcl -log-level=debug
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
@@ -14,6 +14,7 @@ KillSignal=SIGTERM
 Restart=on-failure
 RestartSec=42s
 LimitMEMLOCK=infinity
+RuntimeDirectory=vault
 
 [Install]
 WantedBy=multi-user.target
