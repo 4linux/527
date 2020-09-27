@@ -8,21 +8,23 @@ require 'yaml'
 secmachines = YAML.load_file("machines.yml")
 
 Vagrant.configure("2") do |config|
-	secmachines.each do |machines|
-		config.vm.define machines["name"] do |server|
-			server.vm.hostname = machines["name"]
-			server.vm.box = machines["so"]
-			server.vm.box_check_update = false
-			server.vm.network "private_network", ip: machines["ip"], dns: "8.8.8.8" 
+  secmachines.each do |machines|
+    config.vm.define machines["name"] do |server|
+      server.vm.hostname = machines["name"]
+      server.vm.box = machines["box"]
+      server.vm.box_check_update = false
+      server.vm.network "private_network", ip: machines["ip"], dns: "8.8.8.8" 
 
-			server.vm.provider "virtualbox" do |vb|
-				vb.customize ["modifyvm", :id, "--groups", "/DevSecOps"]
-				vb.memory = machines["memory"]
-				vb.cpus = machines["cpus"]
-				vb.name = machines["name"]
-			end
+      server.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--groups", "/DevSecOps"]
+        vb.memory = machines["memory"]
+        vb.cpus = machines["cpus"]
+        vb.name = machines["name"]
+      end
 
-      server.vm.provision "shell", path: "provisionamento/provision.sh", args: machines["script"]
-		end
-	end
+      server.vm.provision "file", source: "keys/devsecops.pem", destination: "/tmp/"
+      server.vm.provision "file", source: "keys/devsecops.pub", destination: "/tmp/"
+      server.vm.provision "shell", path: machines["script"]
+    end
+  end
 end
