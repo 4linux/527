@@ -1,2 +1,0 @@
-export VAULT_ADDR='http://192.168.77.30:8200'
-export VAULT_API_ADDR='http://192.168.77.30:8200'
