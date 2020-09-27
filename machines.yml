@@ -3,29 +3,29 @@
   cpus: 1
   memory: 3072
   ip: 192.168.77.10
-  so: centos/7
-  script: provisionamento/testing.yml
+  box: 4linux/527-testing
+  script: provisionamento/testing.sh
 
 #Docker / SONARQUBE / Logstash / ModSecurity / AWX - Ansible Hardening / Clair
 - name: automation
   cpus: 1
   memory: 3072
   ip: 192.168.77.20
-  so: debian/buster64
-  script: provisionamento/automation.yml
+  box: 4linux/527-automation
+  script: provisionamento/automation.sh
 
 #Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS 
 - name: logging
   cpus: 1
   memory: 4092
   ip: 192.168.77.30
-  so: centos/8
-  script: provisionamento/logging.yml
+  box: 4linux/527-logging
+  script: provisionamento/logging.sh
 
 #Hashicorp Vault(Client) / Terraform / Gauntlt / Kong
 - name: validation
   cpus: 1
   memory: 2048
   ip: 192.168.77.40
-  so: debian/buster64
-  script: provisionamento/validation.yml
+  box: 4linux/527-validation
+  script: provisionamento/validation.sh
