@@ -22,8 +22,8 @@ Vagrant.configure("2") do |config|
         vb.name = machines["name"]
       end
 
-      server.vm.provision "file", source: "keys/devsecops.pem", destination: "/tmp/"
-      server.vm.provision "file", source: "keys/devsecops.pub", destination: "/tmp/"
+      server.vm.provision "file", source: "keys/devsecops.pem", destination: "/tmp/devsecops.pem"
+      server.vm.provision "file", source: "keys/devsecops.pub", destination: "/tmp/devsecops.pub"
       server.vm.provision "shell", path: machines["script"]
     end
   end
