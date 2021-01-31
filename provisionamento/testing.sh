@@ -51,10 +51,26 @@ else
 fi
 
 # Configuração do Xauthority para uso do SSH X11 Forwarding quando possivel
-sudo grep Xauthority /root/.bashrc
+sudo grep Xauthority /root/.bashrc &>/dev/null
 if [ $? -eq 1 ]; then
-  sudo echo 'sudo cp /home/vagrant/.Xauthority /root/.Xauthority' >> /root/.bashrc
+  sudo echo 'sudo cp /home/vagrant/.Xauthority /root/.Xauthority' >> /root/.bashrc && \
+          sudo echo "LANG=en_US.UTF-8" >> /etc/environment && \
+          sudo echo "LC_ALL=en_US.UTF-8" >> /etc/environment
   validateCommand "Configurando Xauthority"
 else
   echo "[OK] Xauthority"
 fi
+
+# Configuração do OpenScap para CentOS
+SG_PATH="/usr/share/xml/scap/ssg/content"
+for FILE in $(ls $SG_PATH/ssg-rhel7-*);
+  do
+    if [ ! -e "${FILE//rhel7/centos7}" ]; then
+      sudo cp $FILE ${FILE//rhel7/centos7};
+      sudo sed -i \
+              -e 's|idref="cpe:/o:redhat:enterprise_linux|idref="cpe:/o:centos:centos|g' \
+              -e 's|ref_id="cpe:/o:redhat:enterprise_linux|ref_id="cpe:/o:centos:centos|g' \
+              ${FILE//rhel7/centos7};
+    fi
+  done 
+validateCommand "Configuração do OpenSCAP"
