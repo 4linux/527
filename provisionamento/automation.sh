@@ -51,6 +51,11 @@ systemctl enable docker &>/dev/null && \
 
 validateCommand "Ativando Docker"
 
+# Incluindo Usuário Jenkins no grupo do Docker
+usermod -a -G docker jenkins
+
+validateCommand "Configurando Usuario Jenkins"
+
 # Baixando Instalador do Logstash
 sudo test -e /root/logstash-${LOGSTASH_VERSION}.deb
 if [ $? -eq 1 ]; then
