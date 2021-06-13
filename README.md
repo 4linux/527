@@ -12,7 +12,7 @@ Para a criação do laboratório é necessário ter pré instalado os seguintes 
 * [VirtualBox][3]
 * [Vagrant][5]
 
-> Para o máquinas com Windows aconselhamos, se possível, que as instalações sejam feitas pelo gerenciador de pacotes **[Cygwin][6]**.
+> Para o máquinas com Windows aconselhamos o uso do proprio Powershell e que as instalações dos softwares são feitas da maneira tradicional
 
 > Para as máquinas com MAC OS aconselhamos, se possível, que as instalações sejam feitas pelo gerenciador de pacotes **brew**.
 
@@ -25,7 +25,7 @@ Nesse laboratórios, que está centralizado no arquivo [Vagrantfile][8], serão 
 
 Nome       | vCPUs | Memoria RAM | IP            | S.O.¹           | Script de Provisionamento²
 ---------- |:-----:|:-----------:|:-------------:|:---------------:| -----------------------------
-testing    | 1     | 3072MB      | 192.168.77.10 | centos/7        | [provisionamento/testing.sh][9]
+testing    | 1     | 3072MB      | 192.168.77.10 | centos/8        | [provisionamento/testing.sh][9]
 automation | 1     | 3072MB      | 192.168.77.20 | debian/buster64 | [provisionamento/automation.sh][10]
 logging    | 1     | 4092MB      | 192.168.77.30 | centos/8        | [provisionamento/logging.sh][11]
 validation | 1     | 2048MB      | 192.168.77.40 | debian/buster64 | [provisionamento/validation.sh][12]
