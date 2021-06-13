@@ -4,7 +4,7 @@
 DEPS_PACKAGES="unzip wget nodejs vim tree python3 python3-pip python3-setuptools xorg-x11-xauth " 
 PACKAGES="git openscap-scanner scap-security-guide scap-workbench owasp-zap"
 GUI_PACKAGES="glx-utils mesa-dri-drivers spice-vdagent xorg-x11-drivers xorg-x11-server-Xorg xorg-x11-utils xorg-x11-xinit xterm fluxbox"
-PIP_PACKAGES="ComplexHTTPServer"
+PIP_PACKAGES="ComplexHTTPServer zap-cli-v2"
 
 validateCommand() {
   if [ $? -eq 0 ]; then
@@ -32,7 +32,7 @@ else
 fi
 
 # Instalando Pacotes
-sudo yum install -q -y ${DEPS_PACKAGES} ${PACKAGES} ${GUI_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
+sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} ${GUI_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
 validateCommand "Instalação de Pacotes"
 
@@ -43,8 +43,8 @@ validateCommand "Pacotes Python"
 
 # Criando Link Simbolico OWASP ZAP
 if [ ! -e /usr/bin/zap.sh ]; then
-
   ln -s /usr/share/owasp-zap/zap.sh /usr/bin/
+  ln -s /usr/local/bin/zap-cli-v2 /usr/bin/
   validateCommand "Conf. Binário OWASP ZAP"
 else
   echo "[OK] Binário OWASP ZAP"
@@ -61,16 +61,17 @@ else
   echo "[OK] Xauthority"
 fi
 
-# Configuração do OpenScap para CentOS
+# Configuração do OpenScap para CentOS 8
 SG_PATH="/usr/share/xml/scap/ssg/content"
-for FILE in $(ls $SG_PATH/ssg-rhel7-*);
+cp /opt/openscap/cpe/*.xml /usr/share/openscap/cpe/ 
+for FILE in $(ls $SG_PATH/ssg-rhel8-*);
   do
-    if [ ! -e "${FILE//rhel7/centos7}" ]; then
-      sudo cp $FILE ${FILE//rhel7/centos7};
+    if [ ! -e "${FILE//rhel8/centos8}" ]; then
+      sudo cp $FILE ${FILE//rhel8/centos8};
       sudo sed -i \
               -e 's|idref="cpe:/o:redhat:enterprise_linux|idref="cpe:/o:centos:centos|g' \
               -e 's|ref_id="cpe:/o:redhat:enterprise_linux|ref_id="cpe:/o:centos:centos|g' \
-              ${FILE//rhel7/centos7};
+              ${FILE//rhel8/centos8};
     fi
   done 
 validateCommand "Configuração do OpenSCAP"
