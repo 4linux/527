@@ -1,7 +1,7 @@
 #!/bin/bash
     
 #Variaveis
-DEPS_PACKAGES="vim java tree wget curl redhat-rpm-config python3-devel gcc"
+DEPS_PACKAGES="vim java tree wget curl redhat-rpm-config python3-devel gcc httpd-tools"
 PACKAGES="vault consul mariadb"
 
 validateCommand() {
@@ -30,7 +30,7 @@ else
 fi
 
 # Instalando Pacotes
-sudo yum install -q -y ${DEPS_PACKAGES} ${PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
+sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
 validateCommand "Instalação de Pacotes"
 
