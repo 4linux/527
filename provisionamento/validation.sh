@@ -32,8 +32,11 @@ else
 fi
 
 # Instalando Pacotes
+
+echo "deb [trusted=yes] https://download.konghq.com/gateway-2.x-debian-buster default all" | sudo tee /etc/apt/sources.list.d/kong_bintray_com_kong_deb.list
+
 export DEBIAN_FRONTEND=noninteractive
-sudo apt-get update -qq >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo apt-get --allow-unauthenticated --allow-releaseinfo-change update -qq >/dev/null 2>>/var/log/vagrant_provision.log && \
 	sudo apt-get install -qq -y ${DEPS_PACKAGES} ${PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
 validateCommand "Instalação de Pacotes"
