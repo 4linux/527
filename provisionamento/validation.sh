@@ -4,7 +4,7 @@
 VAULT_SSH_HELPER="0.1.6"
 SSH_HELPER_URL="https://releases.hashicorp.com/vault-ssh-helper/${VAULT_SSH_HELPER}/vault-ssh-helper_${VAULT_SSH_HELPER}_linux_amd64.zip"
 DEPS_PACKAGES="vim python3 python3-pip python-setuptools tree wget curl unzip mlocate gem ruby rubygems ruby-dev zlib1g-dev zlib1g"
-PACKAGES="terraform git nmap dirb kong postgresql postgresql-client mariadb-server"
+PACKAGES="terraform git nmap dirb postgresql postgresql-client mariadb-server"
 
 validateCommand() {
   if [ $? -eq 0 ]; then
