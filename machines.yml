@@ -2,7 +2,7 @@
 - name: testing
   cpus: 1
   memory: 3072
-  ip: 192.168.77.10
+  ip: 192.168.56.10
   box: 4linux/527-testing
   script: provisionamento/testing.sh
 
@@ -10,7 +10,7 @@
 - name: automation
   cpus: 1
   memory: 3072
-  ip: 192.168.77.20
+  ip: 192.168.56.20
   box: 4linux/527-automation
   script: provisionamento/automation.sh
 
@@ -18,7 +18,7 @@
 - name: logging
   cpus: 1
   memory: 4092
-  ip: 192.168.77.30
+  ip: 192.168.56.30
   box: 4linux/527-logging
   script: provisionamento/logging.sh
 
@@ -26,6 +26,6 @@
 - name: validation
   cpus: 1
   memory: 2048
-  ip: 192.168.77.40
+  ip: 192.168.56.40
   box: 4linux/527-validation
   script: provisionamento/validation.sh
