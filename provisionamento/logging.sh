@@ -1,6 +1,6 @@
 #!/bin/bash
     
-#Variaveis
+# Variaveis
 DEPS_PACKAGES="vim java tree wget curl redhat-rpm-config python3-devel gcc httpd-tools"
 PACKAGES="vault consul mariadb"
 
@@ -16,7 +16,7 @@ validateCommand() {
 # Registrando dia do Provision
 sudo date >> /var/log/vagrant_provision.log
 
-# Inserindo chave de SSH
+# Inserindo chave SSH
 sudo test -f /root/.ssh/id_rsa
 if [ $? -eq 1 ]; then
   sudo mkdir -p /root/.ssh/ && \

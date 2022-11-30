@@ -6,7 +6,7 @@
   box: 4linux/527-testing
   script: provisionamento/testing.sh
 
-#Docker / SONARQUBE / Logstash / ModSecurity / AWX - Ansible Hardening / Clair
+#Docker / SONARQUBE / Logstash / ModSecurity / Clair
 - name: automation
   cpus: 1
   memory: 3072
@@ -14,7 +14,7 @@
   box: 4linux/527-automation
   script: provisionamento/automation.sh
 
-#Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS 
+#Elastic Stack / Ansible|Ansible Vault / Hashicorp Vault(Server) / ChatOPS / Rundeck
 - name: logging
   cpus: 1
   memory: 4092

@@ -1,6 +1,6 @@
 #!/bin/bash
     
-#Variaveis
+# Variaveis
 VAULT_SSH_HELPER="0.1.6"
 SSH_HELPER_URL="https://releases.hashicorp.com/vault-ssh-helper/${VAULT_SSH_HELPER}/vault-ssh-helper_${VAULT_SSH_HELPER}_linux_amd64.zip"
 DEPS_PACKAGES="vim python3 python3-pip python-setuptools tree wget curl unzip mlocate gem ruby rubygems ruby-dev zlib1g-dev zlib1g"
@@ -18,7 +18,7 @@ validateCommand() {
 # Registrando dia do Provision
 sudo date >> /var/log/vagrant_provision.log
 
-# Inserindo chave de SSH
+# Inserindo chave SSH
 sudo test -f /root/.ssh/id_rsa
 if [ $? -eq 1 ]; then
   sudo mkdir -p /root/.ssh/ && \

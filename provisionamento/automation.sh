@@ -1,6 +1,6 @@
 #!/bin/bash
     
-#Variaveis
+# Variaveis
 LOGSTASH_VERSION="7.13.1"
 LOGSTASH_URL="https://artifacts.elastic.co/downloads/logstash/logstash-${LOGSTASH_VERSION}-amd64.deb"
 DEPS_PACKAGES="apt-transport-https ca-certificates curl gnupg-agent software-properties-common python3 python3-pip vim openjdk-11-jre wget tree"
@@ -19,7 +19,7 @@ validateCommand() {
   fi
 }
 
-# Inserindo chave de SSH
+# Inserindo chave SSH
 sudo test -f /root/.ssh/id_rsa
 if [ $? -eq 1 ]; then
   sudo mkdir -p /root/.ssh/ && \

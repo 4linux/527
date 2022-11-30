@@ -1,6 +1,6 @@
 #!/bin/bash
     
-#Variaveis
+# Variaveis
 DEPS_PACKAGES="unzip wget nodejs vim tree python3 python3-pip python3-setuptools xorg-x11-xauth " 
 PACKAGES="git openscap-scanner scap-security-guide scap-workbench owasp-zap"
 GUI_PACKAGES="glx-utils mesa-dri-drivers spice-vdagent xorg-x11-drivers xorg-x11-server-Xorg xorg-x11-utils xorg-x11-xinit xterm fluxbox"
@@ -18,7 +18,7 @@ validateCommand() {
 # Registrando dia do Provision
 sudo date >> /var/log/vagrant_provision.log
 
-# Inserindo chave de SSH
+# Inserindo chave SSH
 sudo test -f /root/.ssh/id_rsa
 if [ $? -eq 1 ]; then
   sudo mkdir -p /root/.ssh/ && \

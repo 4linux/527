@@ -1,7 +1,7 @@
 Laboratório - 527 - DevSecOps
 =============================
 
-Repositório para armazenar o Laboratório do curso de DevSecOps da [4Linux][1]
+Repositório para armazenar os arquivos referentes ao Laboratório do curso de DevSecOps da [4Linux][1]
 
 Dependências
 ------------
@@ -12,7 +12,7 @@ Para a criação do laboratório é necessário ter pré instalado os seguintes 
 * [VirtualBox][3]
 * [Vagrant][5]
 
-> Para o máquinas com Windows aconselhamos o uso do proprio Powershell e que as instalações dos softwares são feitas da maneira tradicional
+> Para máquinas com Windows aconselhamos o uso do proprio Powershell e que as instalações dos softwares são feitas da maneira tradicional
 
 > Para as máquinas com MAC OS aconselhamos, se possível, que as instalações sejam feitas pelo gerenciador de pacotes **brew**.
 
