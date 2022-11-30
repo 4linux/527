@@ -32,8 +32,27 @@ fi
 # Solução temporaria para EOL Centos 8
 sudo rpm -Uhv --nodeps http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-release-8.5-3.el8.noarch.rpm >/dev/null 2>>/var/log/vagrant_provision.log
 
+# Copia git plugin
+sudo cp /tmp/git-plugin-1.0.4.jar /root/git-plugin-1.0.4.jar >/dev/null 2>>/var/log/vagrant_provision.log
+
+validateCommand "Copia git plugin"
+
+# Configura infra para Rundeck
+sudo useradd rundeck >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo mkdir -p /opt/rundeck/projects/ansible-hardening/ >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo chown -R rundeck: /opt/rundeck/projects/ansible-hardening/ >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo cp /tmp/devsecops.pem /home/rundeck/id_rsa >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo chmod 600 /home/rundeck/id_rsa >/dev/null 2>>/var/log/vagrant_provision.log && \
+sudo chown rundeck:rundeck /home/rundeck/id_rsa >/dev/null 2>>/var/log/vagrant_provision.log
+
+validateCommand "Configuracoes gerais Rundeck"
+
+# Corrige profile
+sudo sed -i 's/77.30/56.30/g' /etc/profile >/dev/null 2>>/var/log/vagrant_provision.log
+
+validateCommand "Configura profile"
+
 # Instalando Pacotes
 sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
 validateCommand "Instalação de Pacotes"
-

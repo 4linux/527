@@ -44,12 +44,21 @@ pip3 install -q ${PIP_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
 validateCommand "Pacotes Python"
 
+# Configurando archerycli
+sudo python3 -m pip install archerysec-cli --force >/dev/null 2>>/var/log/vagrant_provision.log
+
+validateCommand "Instala Archerysec"
+
+# Configurando Java 11
+alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/bin/java >/dev/null 2>>/var/log/vagrant_provision.log
+validateCommand "Configuracao Java"
+
 # Criando Link Simbolico OWASP ZAP
 if [ ! -e /usr/bin/zap.sh ]; then
   ln -s /usr/share/owasp-zap/zap.sh /usr/bin/
   ln -s /usr/local/bin/zap-cli-v2 /usr/bin/
   validateCommand "Conf. Binário OWASP ZAP"
-else
+else  
   echo "[OK] Binário OWASP ZAP"
 fi
 

@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
 
       server.vm.provision "file", source: "keys/devsecops.pem", destination: "/tmp/devsecops.pem"
       server.vm.provision "file", source: "keys/devsecops.pub", destination: "/tmp/devsecops.pub"
+      server.vm.provision "file", source: "provisionamento/files/git-plugin-1.0.4.jar", destination: "/tmp/git-plugin-1.0.4.jar"
       server.vm.provision "shell", path: machines["script"]
     end
   end
