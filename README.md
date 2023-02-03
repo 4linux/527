@@ -25,10 +25,10 @@ Nesse laboratórios, que está centralizado no arquivo [Vagrantfile][8], serão 
 
 Nome       | vCPUs | Memoria RAM | IP            | S.O.¹           | Script de Provisionamento²
 ---------- |:-----:|:-----------:|:-------------:|:---------------:| -----------------------------
-testing    | 1     | 3072MB      | 192.168.56.10 | centos/8        | [provisionamento/testing.sh][9]
-automation | 1     | 3072MB      | 192.168.56.20 | debian/buster64 | [provisionamento/automation.sh][10]
-logging    | 1     | 4092MB      | 192.168.56.30 | centos/8        | [provisionamento/logging.sh][11]
-validation | 1     | 2048MB      | 192.168.56.40 | debian/buster64 | [provisionamento/validation.sh][12]
+testing    | 1     | 3072MB      | 192.168.77.10 | centos/8        | [provisionamento/testing.sh][9]
+automation | 1     | 3072MB      | 192.168.77.20 | debian/buster64 | [provisionamento/automation.sh][10]
+logging    | 1     | 4092MB      | 192.168.77.30 | centos/8        | [provisionamento/logging.sh][11]
+validation | 1     | 2048MB      | 192.168.77.40 | debian/buster64 | [provisionamento/validation.sh][12]
 
 > **¹**: Esses Sistemas operacionais estão sendo utilizado no formato de Boxes, é a forma como o vagrant chama as imagens do sistema operacional utilizado, sendo que a que vamos utilizar são as imagens preparadas pela 4linux: **4linux/527-testing**, **4linux/527-automation**, **4linux/527-logging** e **4linux/527-validation**. [Vagrant Cloud da 4linux][14]
 
