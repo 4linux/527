@@ -31,8 +31,13 @@ else
   echo "[OK] SSH KEY"
 fi
 
+# Atualizando RPM
+sudo dnf update rpm -y >/dev/null 2>>/var/log/vagrant_provision.log
+
 # Solução temporaria para EOL Centos 8
 sudo rpm -Uhv --nodeps http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-release-8.5-3.el8.noarch.rpm >/dev/null 2>>/var/log/vagrant_provision.log
+
+
 
 # Instalando Pacotes
 sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} ${GUI_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
