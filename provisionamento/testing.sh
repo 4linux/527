@@ -1,10 +1,11 @@
 #!/bin/bash
     
 # Variaveis
-DEPS_PACKAGES="unzip wget nodejs vim tree python3 python3-pip python3-setuptools xorg-x11-xauth " 
+DEPS_PACKAGES="unzip wget nodejs vim tree python3 python3-pip python3-setuptools xorg-x11-xauth langpacks-en glibc-all-langpacks" 
 PACKAGES="git openscap-scanner scap-security-guide scap-workbench owasp-zap"
 GUI_PACKAGES="glx-utils mesa-dri-drivers spice-vdagent xorg-x11-drivers xorg-x11-server-Xorg xorg-x11-utils xorg-x11-xinit xterm fluxbox"
 PIP_PACKAGES="ComplexHTTPServer zap-cli-v2"
+# MIRROR_CENTOS="ufscar"
 
 validateCommand() {
   if [ $? -eq 0 ]; then
@@ -31,33 +32,45 @@ else
   echo "[OK] SSH KEY"
 fi
 
+# Altera os repositorio do Centos8 pra o mirror Vault, pois foi depreciado os mirros oficiais.
+sudo sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sudo sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+# Ajustanto repo Epel-8. countme não é mais permitido.
+sudo sed -i 's/^countme=1/#&/' /etc/yum.repos.d/epel*.repo
+
+# Limpando Cache de repositorio
+sudo dnf clean all
+
+# Instalando NodeJS 14
+sudo curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+sudo sed -i 's/^failovermethod=priority/#&/' /etc/yum.repos.d/nodesource-el8.repo
+
 # Atualizando RPM
-sudo dnf update rpm -y >/dev/null 2>>/var/log/vagrant_provision.log
+sudo dnf update rpm -q -y
 
-# Solução temporaria para EOL Centos 8
-sudo rpm -Uhv --nodeps http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-release-8.5-3.el8.noarch.rpm >/dev/null 2>>/var/log/vagrant_provision.log
-
-
+# # Solução temporaria para EOL Centos 8
+# sudo rpm -Uhv --nodeps http://mirror.${MIRROR_CENTOS}.br/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-3.el8.noarch.rpm http://mirror.${MIRROR_CENTOS}.br/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-3.el8.noarch.rpm http://mirror.${MIRROR_CENTOS}.br/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-release-8.5-3.el8.noarch.rpm
 
 # Instalando Pacotes
-sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} ${GUI_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
+sudo dnf install -y ${DEPS_PACKAGES} ${PACKAGES} ${GUI_PACKAGES}
 
 validateCommand "Instalação de Pacotes"
 
 # Instalando Pacotes Python
-pip3 install -q ${PIP_PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
+sudo pip3 install -q ${PIP_PACKAGES}
 
 validateCommand "Pacotes Python"
 
 # Configurando archerycli
-sudo python3 -m pip install archerysec-cli --force >/dev/null 2>>/var/log/vagrant_provision.log
+sudo python3 -m pip install archerysec-cli
 
 validateCommand "Instala Archerysec"
 
 # Criando Link Simbolico OWASP ZAP
 if [ ! -e /usr/bin/zap.sh ]; then
-  ln -s /usr/share/owasp-zap/zap.sh /usr/bin/
-  ln -s /usr/local/bin/zap-cli-v2 /usr/bin/
+  sudo ln -s /usr/share/owasp-zap/zap.sh /usr/bin/
+  sudo ln -s /usr/local/bin/zap-cli-v2 /usr/bin/
   validateCommand "Conf. Binário OWASP ZAP"
 else  
   echo "[OK] Binário OWASP ZAP"
