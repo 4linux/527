@@ -27,5 +27,6 @@
   cpus: 1
   memory: 2048
   ip: 192.168.56.40
-  box: 4linux/527-validation
+  box: generic/debian12
   script: provisionamento/validation.sh
+

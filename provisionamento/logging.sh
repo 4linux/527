@@ -55,6 +55,14 @@ sudo sed -i 's/77.30/56.30/g' /etc/profile >/dev/null 2>>/var/log/vagrant_provis
 
 validateCommand "Configura profile"
 
+# Atualizar os arquivos .repo
+sed -i 's/mirror.centos.org/vault.centos.org/g' /etc/yum.repos.d/*.repo
+sed -i 's/^#.*baseurl=http/baseurl=http/g' /etc/yum.repos.d/*.repo
+sed -i 's/^mirrorlist=http/#mirrorlist=http/g' /etc/yum.repos.d/*.repo
+
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
 # Instalando Pacotes
 sudo dnf install -q -y ${DEPS_PACKAGES} ${PACKAGES} >/dev/null 2>>/var/log/vagrant_provision.log
 
